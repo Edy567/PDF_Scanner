@@ -100,7 +100,7 @@ async function processPdf(fileBuffer, fileName) {
     console.log(`${fileName} Text insuficient, pornim OCR cu model vizual...`);
 
     const canvasFactory = new NodeCanvasFactory();
-    const MAX_PAGES = 8;
+    const MAX_PAGES = 16;
     const step = numPages > MAX_PAGES ? Math.floor(numPages / MAX_PAGES) : 1;
     let ocrText = '';
 
@@ -140,6 +140,7 @@ async function processPdf(fileBuffer, fileName) {
     await worker.terminate();
     return { text: ocrText.trim(), meta };
 }
+const OLLAMA_BASE_URL = process.env.OLLAMA_URL || 'http://localhost:11434'; 
 
 app.post('/api/upload-folder', upload.array('documents'), async (req, res) => {
     try {
@@ -164,7 +165,7 @@ app.post('/api/upload-folder', upload.array('documents'), async (req, res) => {
 
                 const userPrompt = `Extrage informațiile din acest document:\nNume fisier: ${file.originalname}\nAutor din metadate: ${meta.Author || 'Necunoscut'}\nData din metadate: ${formatDate(meta.CreationDate)}\n\nTEXT EXTRAS:\n${textStr}\n\nCompletează acest format JSON cu informațiile găsite. Nu adăuga niciun alt cuvânt în afara JSON-ului!\n{\n  "nume_fisier": "${file.originalname}",\n  "subiect": "scrie aici despre ce este vorba",\n  "autor": "scrie aici cine l-a creat",\n  "data_crearii": "scrie aici data",\n  "rezumat": "rezumat de cateva propozitii"\n}`;
 
-                const response = await axios.post('http://localhost:11434/api/generate', {
+                const response = await axios.post(`${OLLAMA_BASE_URL}/api/generate`, {
                     model: 'llama3',
                     system: systemPrompt,
                     prompt: userPrompt,

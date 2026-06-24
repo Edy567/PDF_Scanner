@@ -1,0 +1,34 @@
+version: "3.8" 
+
+services: 
+
+  backend: 
+
+    build:
+      context: ./backend
+      dockerfile: Dockerfile 
+
+    volumes: 
+      - ./backend:/backapp 
+      - /backapp/node_modules
+
+    ports: 
+      - 5000:5000 
+
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - OLLAMA_URL=http://host.docker.internal:11434
+
+  frontend: 
+    
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile 
+    
+    volumes: 
+      - ./frontend/src:/frontapp/src 
+
+    ports: 
+      - 3000:3000 
+

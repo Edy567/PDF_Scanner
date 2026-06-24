@@ -2,8 +2,6 @@
 
 /node_modules
 
-/backend/Dockerfile 
-.dockerignore 
-/frontend/Dockerfile 
-docker-compose.yml 
+dockerignore  
+
 

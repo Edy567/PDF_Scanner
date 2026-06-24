@@ -1,8 +1,8 @@
 FROM node 
 
-workdir '/frontapp' 
+WORKDIR '/frontapp' 
 
-copy package.json . 
+COPY package.json . 
 
 RUN npm install 
 
